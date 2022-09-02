@@ -1,5 +1,7 @@
 # 史萊姆建國譚傷害計算機
 
+應用程式網址: https://script.google.com/macros/s/AKfycbzpSdPBaRY4KTQDwkRXSeWhjE7YvKAm580llRXbCKflIF_FsASZHuvv-CYoVqhRmeeGvA/exec
+
 作者: Emagu(程式)、extreme(數值公式)
 
 相關網站:
