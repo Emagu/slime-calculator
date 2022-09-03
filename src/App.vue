@@ -11,7 +11,7 @@ const extendSetting = reactive([
     name:"計算抵抗"
   },
   {
-    show:false,
+    show:true,
     name:"計算弱點"
   },
   {
@@ -32,9 +32,14 @@ const GetOption = () => {
   {
     for(var row=14; row < 23; row++)
     {
+      var defaultValue = false;
+      if(row == 14 || row == 15 || row == 19)
+      {
+        defaultValue = true;
+      }
       Options.push({
         name: Table[row][0],
-        show: false
+        show: defaultValue
       });
     }
   }
