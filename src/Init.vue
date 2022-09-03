@@ -63,16 +63,10 @@
         showDialog.value = false;
     }
 
-    const renameTab = (id)=>{
+    const renameTab = ()=>{
         showDialog.value = true;
-        for(var i=0;i<Apps.length;i++)
-        {
-            if(Apps[i].id == id)
-            {
-                DialogName.value = Apps[i].name;
-            }
-        }
-        DialogSaveId = id;
+        DialogName.value = GetTab().name;
+        DialogSaveId = SelectedIndex.value;
         DialogSaveEvent = renameTabEvent;
     }
     const selectTab = (id)=>{

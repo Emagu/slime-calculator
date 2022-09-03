@@ -2,10 +2,13 @@
     <div class="tabs-component">
         <ul role="tablist" class="tabs-component-tabs">
             <li v-for="(tab,index) in tabs" :key="index" :class="{'is-active': tab.id===selectedIndex}" class="tabs-component-tab">
-                <a @click="selectTab(tab.id)" @dblclick="renameTab(tab.id)" class="tabs-component-tab-a">{{tab.name}}</a>
+                <a @click="selectTab(tab.id)" class="tabs-component-tab-a">{{tab.name}}</a>
             </li>
             <li class="tabs-component-tab">
                 <a @click="addTab()" class="tabs-component-tab-a">+</a>
+            </li>
+            <li class="tabs-component-tab">
+                <a @click="renameTab()" class="tabs-component-tab-a">重新命名</a>
             </li>
         </ul>
         <div class="tab-component-panels">
