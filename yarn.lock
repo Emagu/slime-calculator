@@ -506,6 +506,11 @@ vue-cryptojs@^2.3.0:
   dependencies:
     crypto-js "^4.0.0"
 
+vue-loading-overlay@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/vue-loading-overlay/-/vue-loading-overlay-5.0.3.tgz#2838297fe9c7e8b2a1e1ce3415c115487885933a"
+  integrity sha512-6JWZalwlHF4do3HXsFZGt6PcWYseAI5FuNKpveEkljkzqskDWRr7rYmYHVx2kKu4qIvK0vLpL25T/hpFMNoevQ==
+
 vue@^3.2.37:
   version "3.2.38"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.2.38.tgz#cda3a414631745b194971219318a792dbbccdec0"

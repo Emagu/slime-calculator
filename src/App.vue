@@ -1,10 +1,11 @@
 <script setup>
+import { ref } from "vue";
 import axios from 'axios'
-import { ref } from 'vue';
 import {reactive} from "@vue/reactivity";
 import { HyperFormula } from 'hyperformula';
 const Table = reactive([]);
 const Options = reactive([]);
+const isLoading = ref(false);
 const extendSetting = reactive([
   {
     show:false,
@@ -80,16 +81,26 @@ const ShowReportData = () => {
   })
   return result;
 }
-const GetValue = (row, col) => {
-  const hfInstance = HyperFormula.buildFromArray(Table,{
+
+const hfInstance = ref();;
+const CalculatorEvent = ()=>{
+  isLoading.value = true;
+  hfInstance.value = HyperFormula.buildFromArray(Table,{
     licenseKey: "gpl-v3"
   });
-  return hfInstance.getCellValue({col: col, row: row, sheet:0});
+  isLoading.value = false;
+};
+const GetValue = (row, col) => {
+  if(hfInstance.value == null)
+  {
+    return 0;
+  }
+  return hfInstance.value.getCellValue({col: col, row: row, sheet:0});
 }
 let dataRequest = new FormData();
 dataRequest.append("Action", "read");
 dataRequest.append("Data", JSON.stringify({Id: "1jy6LWVGohjxMR2igSuXHID_6MoGaiHZUElQ6hsBII54", sheet: "新版公式", getFormulas: true, colStart:1,rowStart:1, colEnd: 16}));
-
+isLoading.value = true;
 axios({
   method: 'post',
   headers: { 'Content-Type': 'application/json' },
@@ -104,12 +115,14 @@ axios({
     data.forEach((element) => {
       Table.push(element);
     });
+    isLoading.value = false;
   }
 });
 </script>>
 
 <template>
   <div class="wrapper">
+    <loading :active.sync="isLoading"></loading>
     <div class="self">
       <p>己方數值</p>
       <p v-for="(data, index) in GetSelf()" :key="index">
@@ -136,6 +149,7 @@ axios({
       <p v-for="(data, index) in GetEnemy()" :key="index">
         {{Table[data][2]}}<input type="number" v-model="Table[data][3]" />
       </p>
+      <span><button @click="CalculatorEvent()">計算</button></span>
     </div>
     <div class="options">
         <p v-for="(item, index) in extendSetting" :key="index">
