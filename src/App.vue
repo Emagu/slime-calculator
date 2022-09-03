@@ -1,128 +1,106 @@
 <script setup>
-import { ref } from "vue";
-import axios from 'axios'
-import {reactive} from "@vue/reactivity";
-import { HyperFormula } from 'hyperformula';
-const Table = reactive([]);
-const Options = reactive([]);
-const isLoading = ref(false);
-const extendSetting = reactive([
-  {
-    show:false,
-    name:"計算抵抗"
-  },
-  {
-    show:true,
-    name:"計算弱點"
-  },
-  {
-    show:false,
-    name:"計算Combo4"
-  },
-  {
-    show:false,
-    name:"計算Combo5"
-  },
-  {
-    show:false,
-    name:"計算Combo6"
-  }
-]);
-const GetOption = () => {
-  if(Options.length == 0 && Table.length > 0)
-  {
-    for(var row=14; row < 23; row++)
-    {
-      var defaultValue = false;
-      if(row == 14 || row == 15 || row == 19)
-      {
-        defaultValue = true;
-      }
-      Options.push({
-        name: Table[row][0],
-        show: defaultValue
-      });
-    }
-  }
-  return Options;
-}
-const GetSelf = () => {
-  var result = [];
-  if(Table.length > 0)
-  {
-    for(var row=0; row < 13; row++)
-    {
-      result.push(row);
-    }
-  }
-  return result;
-}
-const GetEnemy = () => {
-  var result = [];
-  if(Table.length > 0)
-  {
-    for(var row=0; row < 6; row++)
-    {
-      result.push(row);
-    }
-  }
-  return result;
-}
-const ShowReportData = () => {
-  var result = [];
-  Options.forEach((option, index)=>{
-    if(option.show)
-    {
-     result.push({
-      name: option.name,
-      index: index
-     });
-    }
-  })
-  return result;
-}
-
-const hfInstance = ref();;
-const CalculatorEvent = ()=>{
-  isLoading.value = true;
-  hfInstance.value = HyperFormula.buildFromArray(Table,{
-    licenseKey: "gpl-v3"
+  import { ref } from "vue";
+  import axios from 'axios'
+  import {reactive} from "@vue/reactivity";
+  import { HyperFormula } from 'hyperformula';
+  const props = defineProps({
+    source: Array
   });
-  isLoading.value = false;
-};
-const GetValue = (row, col) => {
-  if(hfInstance.value == null)
-  {
-    return 0;
+  const Table = props.source;
+  const Options = reactive([]);
+  const extendSetting = reactive([
+    {
+      show:false,
+      name:"計算抵抗"
+    },
+    {
+      show:true,
+      name:"計算弱點"
+    },
+    {
+      show:false,
+      name:"計算Combo4"
+    },
+    {
+      show:false,
+      name:"計算Combo5"
+    },
+    {
+      show:false,
+      name:"計算Combo6"
+    }
+  ]);
+  const GetOption = () => {
+    if(Options.length == 0 && Table.length > 0)
+    {
+      for(var row=14; row < 23; row++)
+      {
+        var defaultValue = false;
+        if(row == 14 || row == 15 || row == 19)
+        {
+          defaultValue = true;
+        }
+        Options.push({
+          name: Table[row][0],
+          show: defaultValue
+        });
+      }
+    }
+    return Options;
   }
-  return hfInstance.value.getCellValue({col: col, row: row, sheet:0});
-}
-let dataRequest = new FormData();
-dataRequest.append("Action", "read");
-dataRequest.append("Data", JSON.stringify({Id: "1jy6LWVGohjxMR2igSuXHID_6MoGaiHZUElQ6hsBII54", sheet: "新版公式", getFormulas: true, colStart:1,rowStart:1, colEnd: 16}));
-isLoading.value = true;
-axios({
-  method: 'post',
-  headers: { 'Content-Type': 'application/json' },
-  url: 'https://script.google.com/macros/s/AKfycbxuaHQf3AuYpCnN1NjjJqoaiMpKr8ug_O0JocLGCz4godRowCbdm4TJkI-B8C6a3ql4tw/exec',
-  data: dataRequest
-})
-.then((res) => {
-  if(res.data.status)
-  {
-    var response= JSON.parse(res.data.data);
-    var data = JSON.parse(response.data);
-    data.forEach((element) => {
-      Table.push(element);
+  const GetSelf = () => {
+    var result = [];
+    if(Table.length > 0)
+    {
+      for(var row=0; row < 13; row++)
+      {
+        result.push(row);
+      }
+    }
+    return result;
+  }
+  const GetEnemy = () => {
+    var result = [];
+    if(Table.length > 0)
+    {
+      for(var row=0; row < 6; row++)
+      {
+        result.push(row);
+      }
+    }
+    return result;
+  }
+  const ShowReportData = () => {
+    var result = [];
+    Options.forEach((option, index)=>{
+      if(option.show)
+      {
+      result.push({
+        name: option.name,
+        index: index
+      });
+      }
+    })
+    return result;
+  }
+
+  const hfInstance = ref();;
+  const CalculatorEvent = ()=>{
+    hfInstance.value = HyperFormula.buildFromArray(Table,{
+      licenseKey: "gpl-v3"
     });
-    isLoading.value = false;
+  };
+  const GetValue = (row, col) => {
+    if(hfInstance.value == null)
+    {
+      return 0;
+    }
+    return hfInstance.value.getCellValue({col: col, row: row, sheet:0});
   }
-});
 </script>>
 
 <template>
   <div class="wrapper">
-    <loading :active.sync="isLoading"></loading>
     <div class="self">
       <p>己方數值</p>
       <p v-for="(data, index) in GetSelf()" :key="index">
@@ -234,48 +212,47 @@ axios({
     grid-column: 1 / 4;
     grid-row: 2;
   }
-  
+    
+  .fl-table {
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: normal;
+      border: none;
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 100%;
+      white-space: nowrap;
+      background-color: white;
+  }
 
-.fl-table {
-    border-radius: 5px;
-    font-size: 12px;
-    font-weight: normal;
-    border: none;
-    border-collapse: collapse;
-    width: 100%;
-    max-width: 100%;
-    white-space: nowrap;
-    background-color: white;
-}
+  .fl-table td, .fl-table th {
+      text-align: center;
+      padding: 8px;
+  }
 
-.fl-table td, .fl-table th {
-    text-align: center;
-    padding: 8px;
-}
+  .fl-table td {
+      border-right: 1px solid #f8f8f8;
+      font-size: 12px;
+  }
 
-.fl-table td {
-    border-right: 1px solid #f8f8f8;
-    font-size: 12px;
-}
-
-.fl-table thead th {
-    color: #ffffff;
-    background: #4FC3A1;
-}
+  .fl-table thead th {
+      color: #ffffff;
+      background: #4FC3A1;
+  }
 
 
-.fl-table thead th:nth-child(odd) {
-    color: #ffffff;
-    background: #324960;
-}
+  .fl-table thead th:nth-child(odd) {
+      color: #ffffff;
+      background: #324960;
+  }
 
-.fl-table tr:nth-child(even) {
-    background: #F8F8F8;
-}
+  .fl-table tr:nth-child(even) {
+      background: #F8F8F8;
+  }
 
-/* Responsive */
+  /* Responsive */
 
-@media (max-width: 767px) {
+  @media (max-width: 767px) {
     .fl-table {
         display: block;
         width: 100%;
@@ -337,6 +314,6 @@ axios({
         display: block;
         text-align: center;
     }
-}
+  }
 
 </style>
