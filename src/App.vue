@@ -63,7 +63,7 @@
     var result = [];
     if(Table.length > 0)
     {
-      for(var row=0; row < 6; row++)
+      for(var row=0; row < 7; row++)
       {
         result.push(row);
       }
