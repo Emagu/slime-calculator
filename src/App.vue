@@ -4,50 +4,14 @@
   import {reactive} from "@vue/reactivity";
   import { HyperFormula } from 'hyperformula';
   const props = defineProps({
-    source: Array
+    source: Array,
+    extendsetting: Array,
+    options: Array
   });
   const Table = props.source;
-  const Options = reactive([]);
-  const extendSetting = reactive([
-    {
-      show:false,
-      name:"計算抵抗"
-    },
-    {
-      show:true,
-      name:"計算弱點"
-    },
-    {
-      show:false,
-      name:"計算Combo4"
-    },
-    {
-      show:false,
-      name:"計算Combo5"
-    },
-    {
-      show:false,
-      name:"計算Combo6"
-    }
-  ]);
-  const GetOption = () => {
-    if(Options.length == 0 && Table.length > 0)
-    {
-      for(var row=14; row < 23; row++)
-      {
-        var defaultValue = false;
-        if(row == 14 || row == 15 || row == 19)
-        {
-          defaultValue = true;
-        }
-        Options.push({
-          name: Table[row][0],
-          show: defaultValue
-        });
-      }
-    }
-    return Options;
-  }
+  const extendSetting = props.extendsetting;
+  const Options = props.options;
+  
   const GetSelf = () => {
     var result = [];
     if(Table.length > 0)
@@ -133,7 +97,7 @@
         <p v-for="(item, index) in extendSetting" :key="index">
           <input type="checkbox" v-model="item.show" :id="item.name" /><label :for="item.name">{{item.name}}</label>
         </p>
-        <p v-for="(item, index) in GetOption()" :key="index">
+        <p v-for="(item, index) in Options" :key="index">
           <input type="checkbox" v-model="item.show" :id="item.name" /><label :for="item.name">{{item.name}}</label>
         </p>
     </div>
